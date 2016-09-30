@@ -1,5 +1,5 @@
 --Подключаем модули графической библиотеки
-dofile("frameLibrary.lua")--"/home/arios/Lua/frameLibrary.lua") --Библиотека функций
+dofile("./Lua/frameLibrary.lua") --Библиотека функций
 local MEMORY = 0 --Число в буфере
 
 --Предварительно обозначим символы
