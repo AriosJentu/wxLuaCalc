@@ -1,5 +1,6 @@
 --Подключаем модули графической библиотеки
-local APPDIR = "./Lua/"
+local APPDIR = ""--"./Lua/"
+
 dofile(APPDIR.."frameLibrary.lua") --Библиотека функций
 local MEMORY = 0 --Число в буфере
 

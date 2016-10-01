@@ -16,8 +16,6 @@ function createFrame(x, y, w, h, title, style, parent)
 	local frame = wx.wxFrame(parent or wx.NULL, id, tostring(title), wx.wxPoint(x, y) or wx.wxDefaultPosition, wx.wxSize(w, h) or wx.wxDefaultSize, style or wx.wxDEFAULT_FRAME_STYLE)
 	frame:Show(true)
 
-	frame:SetIcon(wx.wxIcon("./Lua/cicon.ico", 0))
-
 	return frame, id
 end
 
@@ -30,7 +28,7 @@ function setAppIcon(element, iconDir)
 		return false 
 	end
 
-	local x = element:SetIcon(wx.wxIcon(iconDir, 0))
+	element:SetIcon(wx.wxIcon(iconDir, 0))
 end
 
 --Получение типа обьекта
