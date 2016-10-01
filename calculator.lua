@@ -550,8 +550,12 @@ addEvent(mainFrame, "onKey", function(key)
 	if isKeyPressed("shift") and (key == "-" or key == "num_sub") then executeEvent(but.Negtv, "onClick") end
 
 	--Теперь результат
-	if key == "enter" or key == "num_enter" then executeEvent(but.Reslt, "onClick") end
+	if key == "enter" or key == "num_enter" or key == "=" then executeEvent(but.Reslt, "onClick") end
+
+	--Проверка ключей
+	--print("\""..key.."\"")
 
 end)
+
 --Обязательный пункт, его надо всегда в конец программы ставить
 runApplication()
