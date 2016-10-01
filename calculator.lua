@@ -1,5 +1,6 @@
 --Подключаем модули графической библиотеки
-dofile("./Lua/frameLibrary.lua") --Библиотека функций
+local APPDIR = "./Lua/"
+dofile(APPDIR.."frameLibrary.lua") --Библиотека функций
 local MEMORY = 0 --Число в буфере
 
 --Предварительно обозначим символы
@@ -15,6 +16,7 @@ local Elements = {
 
 --Создаём основное окно
 local mainFrame = createFrame(0, 0, 230, 304, "Калькулятор", "nores")
+setAppIcon(mainFrame, APPDIR.."cicon.ico") --Устанавливаем иконку
 mainFrame:Show() --Показываем окно
 centerElement(mainFrame)
 local shared = false --Перемнная, обозначающая, что калькулятор сложен/разложен
@@ -377,12 +379,13 @@ executeEvent(but["Reslt"], "onClick", function()
 	addHistoryElement(SavingText.." = "..res)
 
 	--Установить текст
-	setText(edit, tonumber(res) or 666)
+	if res == "Welcome to HELL" then res = 666 end
+	setText(edit, res)
 
 	--Если заданный текст - таки инфинита, то превратить её рассчёт в ноль
 	if res == "∞" then res = 0 end
 	--Обновить число
-	numeric = tostring(tonumber(res) or 0)
+	numeric = tostring(tonumber(res))
 	--Обнулить параметры
 	zeroClick = false
 	sqrtClick = false
