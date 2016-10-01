@@ -63,7 +63,7 @@ butNum[4] 	= createButton(5, 	160, 40, 35, "4", _, mainFrame)
 butNum[5] 	= createButton(50, 	160, 40, 35, "5", _, mainFrame)
 butNum[6] 	= createButton(95, 	160, 40, 35, "6", _, mainFrame)
 but["Proiz"]= createButton(140, 160, 40, 35, "*", _, mainFrame)
-but["Revrs"]= createButton(185, 160, 40, 35, "x¯¹", _, mainFrame)
+but["Revrs"]= createButton(185, 160, 40, 35, "1/x", _, mainFrame) --"x¯¹"
 
 --Четвертый порядок кнопок
 butNum[1]	= createButton(5, 	200, 40, 35, "1", _, mainFrame)
@@ -385,7 +385,7 @@ addEvent(but.Reslt, "onClick", function()
 	--Если заданный текст - таки инфинита, то превратить её рассчёт в ноль
 	if res == "∞" then res = 0 end
 	--Обновить число
-	numeric = tostring(tonumber(res))
+	numeric = getText(edit)
 	--Обнулить параметры
 	zeroClick = false
 	sqrtClick = false
@@ -493,11 +493,11 @@ end)
 --Memory Read
 addEvent(butMR, "onClick", function()
 	local text = getText(edit)
-	local lnt = numeric:len()
+	local lnth = numeric:len()
 
 	numeric = tostring(MEMORY)
 
-	text = text:sub(1, text:len()-lnt)
+	text = text:sub(1, text:len()-lnth)
 	text = text..numeric
 
 	setText(edit, text)
