@@ -73,6 +73,41 @@ end
 function setPosition(element, x, y) return element:SetPosition(wx.wxPoint(x, y)) end
 function setSize(element, w, h) return element:SetSize(wx.wxSize(w, h)) end
 
+--Шрифт
+function setFont(element, name, size, fam, style, weig, ulin) 
+
+	--Семейство шрифтов
+	if fam == "decor" then fam = wx.wxFONTFAMILY_DECORATIVE
+	elseif fam == "formal" then fam = wx.wxFONTFAMILY_ROMAN
+	elseif fam == "hwrite" then fam = wx.wxFONTFAMILY_SCRIPT
+	elseif fam == "serif" then fam = wx.wxFONTFAMILY_SWISS	
+	elseif fam == "modern" then fam = wx.wxFONTFAMILY_MODERN
+	elseif fam == "mono" then fam = wx.wxFONTFAMILY_TELETYPE
+	elseif fam == "max" then fam = wx.wxFONTFAMILY_MAX
+	else fam = wx.wxFONTFAMILY_DEFAULT end
+
+	--Стиль шрифта
+	if style == "italic" then style = wx.wxFONTSTYLE_ITALIC
+	elseif style == "slant" then style = wx.wxFONTSTYLE_SLANT
+	else style = wx.wxFONTSTYLE_NORMAL end
+
+	--Толщина шрифта
+	if weig == "bold" then weig = wx.wxFONTWEIGHT_BOLD
+	elseif weig == "light" then weig = wx.wxFONTWEIGHT_LIGHT
+	else weig = wx.wxFONTWEIGHT_NORMAL end
+
+	--Возвращение установки шрифта (Ulin - подчёркивание - underline)
+	return element:SetFont(wx.wxFont(size, fam, style, weig, ulin, name)) 
+
+end
+
+function getFont(element) return element:GetFont() end
+
+function setColor(element, back, main)
+	element:SetForegroundColour(wx.wxColour(fromHEXToRGB(main)))
+	element:SetBackgroundColour(wx.wxColour(fromHEXToRGB(back)))
+end
+
 --Установка текста элементу
 function setText(element, text) 
 	if getType(element) == "edit" then
@@ -505,6 +540,18 @@ end
 
 --Функция, которая должна стоять в конце каждого форм-файла.
 function runApplication() return wx.wxGetApp():MainLoop() end
+
+--Дополнительные функции
+--==============================================
+--==============================================
+--перевод из хекс в ргб
+function fromHEXToRGB(color)
+	--Если 8 символов (AARRGGBB) - то вернёт 4 числа - r, g, b, a
+    if tostring(color):len() == 8 then return tonumber(color:sub(3, 4), 16), tonumber(color:sub(5, 6), 16), tonumber(color:sub(7, 8), 16), tonumber(color:sub(1, 2), 16)
+    --Если 6 символов (RRGGBB) - то вернёт 3 числа - r, g, b
+    elseif tostring(color):len() == 6 then return tonumber(color:sub(1, 2), 16), tonumber(color:sub(3, 4), 16), tonumber(color:sub(5, 6), 16)
+    end
+end
 
 
 --Экземплы/тесты

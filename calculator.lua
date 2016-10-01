@@ -27,6 +27,7 @@ local edit = createEdit(5, 5, 177, 27, "0", "read", mainFrame)
 
 ---История рассчётов
 local memoHistory = createEdit(230, 5, 225, 230, "История:\n", "mread", mainFrame)
+setFont(memoHistory,"Open Sans", 9)
 local clearHistory = createButton(230, 240, 225, 35, "Очистить", _, mainFrame)
 
 
@@ -34,23 +35,24 @@ local clearHistory = createButton(230, 240, 225, 35, "Очистить", _, main
 --Длина по 40, высота по 35
 local butNum = {} --Цифровые клавиши
 local but = {} --Символьные
+local topBut = {} --Краска для символов
 
 --Кнопка истории рассчётов
 local butHistory = createButton(187, 5, 36, 27, "S", _, mainFrame)
 
 --Первый ряд кнопок
-local butMC = createButton(5+2,		38+2, 40-4, 35-4, "MC", _, mainFrame)
-local butMR = createButton(50+2,	38+2, 40-4, 35-4, "MR", _, mainFrame)
-local butMS = createButton(95+2, 	38+2, 40-4, 35-4, "MS", _, mainFrame)
-local butMP = createButton(140+2, 	38+2, 40-4, 35-4, "M+", _, mainFrame)
-local butMM = createButton(185+2, 	38+2, 40-4, 35-4, "M-", _, mainFrame)
+but[1] = createButton(5+2,		38+2, 40-4, 35-4, "MC", _, mainFrame)
+but[2] = createButton(50+2,	38+2, 40-4, 35-4, "MR", _, mainFrame)
+but[3] = createButton(95+2, 	38+2, 40-4, 35-4, "MS", _, mainFrame)
+but[4] = createButton(140+2, 	38+2, 40-4, 35-4, "M+", _, mainFrame)
+but[5] = createButton(185+2, 	38+2, 40-4, 35-4, "M-", _, mainFrame)
 
 --Второй порядок кнопок
-local butRm  = createButton(5, 	 80, 40, 35, "←", _, mainFrame)
-local butCl  = createButton(50,  80, 40, 35, "CE", _, mainFrame)
-local butCc  = createButton(95,  80, 40, 35, "C", _, mainFrame)
-but["Negtv"] = createButton(140, 80, 40, 35, "±", _, mainFrame)
-but["Sqrt"]  = createButton(185, 80, 40, 35, "√", _, mainFrame)
+but[6]  	= createButton(5, 	 80, 40, 35, "←", _, mainFrame)
+but[7]  	= createButton(50,  80, 40, 35, "CE", _, mainFrame)
+but[8]  	= createButton(95,  80, 40, 35, "C", _, mainFrame)
+but.Negtv	= createButton(140, 80, 40, 35, "±", _, mainFrame)
+but["Sqrt"] = createButton(185, 80, 40, 35, "√", _, mainFrame)
 
 --Третий порядок кнопок
 butNum[7] 	= createButton(5, 	120, 40, 35, "7", _, mainFrame)
@@ -75,8 +77,21 @@ but["Reslt"]= createButton(185, 200, 40, 75, "=", _, mainFrame)
 
 --Последний порядок кнопок
 butNum[0] 	= createButton(5, 	240, 85, 35, "0", _, mainFrame)
-local butPt = createButton(95, 	240, 40, 35, ".", _, mainFrame)
+butNum[10] = createButton(95, 	240, 40, 35, ".", _, mainFrame)
 but["Plus"] = createButton(140, 240, 40, 35, "+", _, mainFrame)
+
+--Покрасим
+setColor(mainFrame, "444444", "EEEEEE")
+setColor(edit, "404040", "EEEEEE")
+setColor(memoHistory, "404040", "EEEEEE")
+
+setColor(clearHistory, "CB1111", "EEEEEE")
+setColor(butHistory, "333333", "EEEEEE")
+
+for _, v in pairs(but) do setColor(v, "333333", "EEEEEE") end
+for _, v in pairs(butNum) do setColor(v, "252525", "EEEEEE") end
+setColor(but.Reslt, "00AF00", "EEEEEE")
+
 
 --Переменные, обозначающие рассчёт
 local Calculation = {
@@ -147,7 +162,7 @@ function calculateResult()
 
 		elseif Calculation.Job[id] == "Perc" then
 
-			result = ( result/(Calculation.Number[id+1] or 1) )*100
+			result = ( result / 100) * (Calculation.Number[id+1] or 1) --)*100
 
 		elseif Calculation.Job[id] == "Negtv" then
 
@@ -273,7 +288,7 @@ addEvent(butNum[0], "onClick", function()
 end)
 
 --Событие для символа точки
-addEvent(butPt, "onClick", function()
+addEvent(butNum[10], "onClick", function()
 	--Если в номере уже есть точка
 	if numeric:find("%.") then 
 		return false --То закрыть выполнение данного события
@@ -395,7 +410,10 @@ addEvent(but.Reslt, "onClick", function()
 end)
 
 --События на клавиши удаления символов
-addEvent(butRm, "onClick", function()
+addEvent(but[6], "onClick", function()
+
+	--Если активна скобочка, то не удалять
+	if sqrtClick then return false end
 
 	local ls = numeric:len() --Длина числа для удаления
 	local text = getText(edit) --Текст
@@ -437,7 +455,10 @@ addEvent(butRm, "onClick", function()
 end)
 
 --Если нажмём на кнопку C, которая очистит только фрагмент выражения
-addEvent(butCc, "onClick", function()
+addEvent(but[8], "onClick", function()
+
+	--Если активна скобочка, то не удалять
+	if sqrtClick then return false end
 	
 	--Снова найдём размеры строк
 	local ls = numeric:len()
@@ -451,11 +472,13 @@ addEvent(butCc, "onClick", function()
 end)
 
 --и если нажмём на кнопку, которая чистит всё выражение сразу
-addEvent(butCl, "onClick", function()
+addEvent(but[7], "onClick", function()
 
 	--Обнуляем все результаты и числа
 	clearResults()
 	numeric = "0"
+	zeroClick = false
+	sqrtClick = false
 	setText(edit, "0")
 
 end)
@@ -485,15 +508,15 @@ addEvent(clearHistory, "onClick", function()
 end)
 
 --Memory Clear
-addEvent(butMC, "onClick", function()
+addEvent(but[1], "onClick", function()
 	MEMORY = 0
 end)
 --Memory Save
-addEvent(butMS, "onClick", function()
+addEvent(but[3], "onClick", function()
 	MEMORY = tonumber(numeric)
 end)
 --Memory Read
-addEvent(butMR, "onClick", function()
+addEvent(but[2], "onClick", function()
 	local text = getText(edit)
 	local lnth = numeric:len()
 
@@ -506,11 +529,11 @@ addEvent(butMR, "onClick", function()
 
 end)
 --Memory add
-addEvent(butMP, "onClick", function()
+addEvent(but[4], "onClick", function()
 	MEMORY = MEMORY+numeric
 end)
 --Memory remove
-addEvent(butMM, "onClick", function()
+addEvent(but[5], "onClick", function()
 	MEMORY = MEMORY-numeric
 end)
 
@@ -530,11 +553,11 @@ addEvent(mainFrame, "onKey", function(key)
 	end
 
 	--Если кнопка "стереть" - то стереть один символ - вызвать событие на кнопку со стрелкой
-	if key == "backspace" then executeEvent(butRm, "onClick") end
+	if key == "backspace" then executeEvent(but[6], "onClick") end
 	--Если кнопка "удалить" - то обнулить актуальное число - вызвать событие на кнопку "C"
-	if key == "delete" or key == "num_del" then executeEvent(butCc, "onClick") end
+	if key == "delete" or key == "num_del" then executeEvent(but[8], "onClick") end
 	--Если кнопка "снести" - то обнулить всё выражение - вызвать событие на кнопку "CE"
-	if isKeyPressed("shift") and (key == "delete" or key == "num_delete") then executeEvent(butCl, "onClick") end
+	if isKeyPressed("shift") and (key == "delete" or key == "num_delete") then executeEvent(but[7], "onClick") end
 
 	--Теперь действия
 	--Если сложение
