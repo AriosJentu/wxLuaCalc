@@ -15,6 +15,32 @@ local Elements = {
 	["Result"] = "="
 }
 
+local colorScheme = {
+	Dark = {
+		Frame = "444444", 
+		Text = "EEEEEE", 
+		EditB = "404040", 
+		EditT = "EEEEEE", 
+		ButD = "333333", 
+		ButL = "252525", 
+		ButM = "EEEEEE",
+		Green = "2e7d32", 
+		Red = "b71c1c"
+	},
+	Light = {
+		Frame = "EEEEEE", 
+		Text = "444444", 
+		EditB = "FFFFFF", 
+		EditT = "333333", 
+		ButD = "E4E4E4", 
+		ButL = "DEDEDE", 
+		ButM = "44EEEEEE",
+		Green = "26c850", 
+		Red = "df3939"
+	},
+}
+local DefaultColorScheme = colorScheme.Dark
+
 --Создаём основное окно
 local mainFrame = createFrame(0, 0, 230, 304, "Калькулятор", "nores")
 setAppIcon(mainFrame, APPDIR.."cicon.ico") --Устанавливаем иконку
@@ -38,17 +64,17 @@ local but = {} --Символьные
 local topBut = {} --Краска для символов
 
 --Кнопка истории рассчётов
-local butHistory = createButton(187, 5, 36, 27, "H", _, mainFrame)
+local butHistory = createButton(187, 5, 36, 27, "Log", _, mainFrame)
 
 --Первый ряд кнопок
 but[1] = createButton(5+2,		38+2, 40-4, 35-4, "MC", _, mainFrame)
-but[2] = createButton(50+2,	38+2, 40-4, 35-4, "MR", _, mainFrame)
+but[2] = createButton(50+2,		38+2, 40-4, 35-4, "MR", _, mainFrame)
 but[3] = createButton(95+2, 	38+2, 40-4, 35-4, "MS", _, mainFrame)
 but[4] = createButton(140+2, 	38+2, 40-4, 35-4, "M+", _, mainFrame)
 but[5] = createButton(185+2, 	38+2, 40-4, 35-4, "M-", _, mainFrame)
 
 --Второй порядок кнопок
-but[6]  	= createButton(5, 	 80, 40, 35, "←", _, mainFrame)
+but[6]  	= createButton(5, 	80, 40, 35, "←", _, mainFrame)
 but[7]  	= createButton(50,  80, 40, 35, "CE", _, mainFrame)
 but[8]  	= createButton(95,  80, 40, 35, "C", _, mainFrame)
 but.Negtv	= createButton(140, 80, 40, 35, "±", _, mainFrame)
@@ -79,18 +105,6 @@ but["Reslt"]= createButton(185, 200, 40, 75, "=", _, mainFrame)
 butNum[0] 	= createButton(5, 	240, 85, 35, "0", _, mainFrame)
 butNum[10] = createButton(95, 	240, 40, 35, ".", _, mainFrame)
 but["Plus"] = createButton(140, 240, 40, 35, "+", _, mainFrame)
-
---Покрасим
-setColor(mainFrame, "444444", "EEEEEE")
-setColor(edit, "404040", "EEEEEE")
-setColor(memoHistory, "404040", "EEEEEE")
-
-setColor(clearHistory, "CB1111", "EEEEEE")
-setColor(butHistory, "333333", "EEEEEE")
-
-for _, v in pairs(but) do setColor(v, "333333", "EEEEEE") end
-for _, v in pairs(butNum) do setColor(v, "252525", "EEEEEE") end
-setColor(but.Reslt, "00AF00", "EEEEEE")
 
 
 --Переменные, обозначающие рассчёт
@@ -203,9 +217,32 @@ end
 local zeroClick = false --Ноль для десятичной дроби 
 local sqrtClick = false --Нажаты ли квадратный корень или реверсивная функция
 local SavingText = "0" --переменная сохранения текста
+
+--События на наведение
+--Двойной цикл для всех элементов-клавишь
+for _, v in pairs({but, butNum, {butHistory, clearHistory}}) do for _, i in pairs(v) do
+	--При наведении
+	addEvent(i, "onMouseEnter", function()
+		--Делаем темнее на 20 уровней (ну тип между 0 и 255)
+		setDarker(i, 20)
+	end)
+
+end end
+
+--И обратный цикл, на отведение
+for _, v in pairs({but, butNum, {butHistory, clearHistory}}) do for _, i in pairs(v) do
+	--При отведении
+	addEvent(i, "onMouseLeave", function()
+		--Добавляет светлость на 20 уровней
+		setLighter(i, 20)
+	end)
+
+end end
+
+
 for i = 1, 9 do
 	--Событие нажатия
-	addEvent(butNum[i], "onClick", function()
+	addEvent(butNum[i], "onMouseDown", function()
 
 		--Если был нажат квадратный корень или 1/x
 		if sqrtClick then
@@ -249,7 +286,7 @@ for i = 1, 9 do
 end
 
 --Событие для символа 0
-addEvent(butNum[0], "onClick", function()
+addEvent(butNum[0], "onMouseDown", function()
 
 	--Если у нас символ бесконечности, то обнуляем
 	if getText(edit) == "∞" then setText(edit, "0") end
@@ -288,7 +325,7 @@ addEvent(butNum[0], "onClick", function()
 end)
 
 --Событие для символа точки
-addEvent(butNum[10], "onClick", function()
+addEvent(butNum[10], "onMouseDown", function()
 	--Если в номере уже есть точка
 	if numeric:find("%.") then 
 		return false --То закрыть выполнение данного события
@@ -307,7 +344,7 @@ end)
 
 --События для действий
 for _, v in pairs({"Plus", "Minus", "Proiz", "Divd", "Perc"}) do
-	addEvent(but[v], "onClick", function()
+	addEvent(but[v], "onMouseDown", function()
 
 		--Добавляем в таблицу обработанный номер/цифру
 		addNumber(tonumber(numeric))
@@ -325,7 +362,7 @@ for _, v in pairs({"Plus", "Minus", "Proiz", "Divd", "Perc"}) do
 	end)
 end
 --Событие нажатия квадратного корня
-addEvent(but.Sqrt, "onClick", function()
+addEvent(but.Sqrt, "onMouseDown", function()
 
 	--Добавляем в таблицу обработанный номер/цифру
 	addNumber(tonumber(numeric))
@@ -342,7 +379,7 @@ addEvent(but.Sqrt, "onClick", function()
 
 end)
 --Событие нажатия клавиши 1/x
-addEvent(but.Revrs, "onClick", function()
+addEvent(but.Revrs, "onMouseDown", function()
 
 	--Добавляем в таблицу обработанный номер/цифру
 	addNumber(tonumber(numeric))
@@ -361,7 +398,7 @@ addEvent(but.Revrs, "onClick", function()
 end)
 
 --Событие нажатия клавиши +-
-addEvent(but.Negtv, "onClick", function()
+addEvent(but.Negtv, "onMouseDown", function()
 
 	--Добавляем в таблицу обработанный номер/цифру
 	addNumber(tonumber(numeric))
@@ -377,7 +414,7 @@ addEvent(but.Negtv, "onClick", function()
 	SavingText = getText(edit)
 end)
 --Если это кнопка результата
-addEvent(but.Reslt, "onClick", function()
+addEvent(but.Reslt, "onMouseDown", function()
 	
 	--Добавить число в таблицу
 	addNumber(tonumber(numeric))
@@ -410,7 +447,7 @@ addEvent(but.Reslt, "onClick", function()
 end)
 
 --События на клавиши удаления символов
-addEvent(but[6], "onClick", function()
+addEvent(but[6], "onMouseDown", function()
 
 	--Если активна скобочка, то не удалять
 	if sqrtClick then return false end
@@ -455,7 +492,7 @@ addEvent(but[6], "onClick", function()
 end)
 
 --Если нажмём на кнопку C, которая очистит только фрагмент выражения
-addEvent(but[8], "onClick", function()
+addEvent(but[8], "onMouseDown", function()
 
 	--Если активна скобочка, то не удалять
 	if sqrtClick then return false end
@@ -472,7 +509,7 @@ addEvent(but[8], "onClick", function()
 end)
 
 --и если нажмём на кнопку, которая чистит всё выражение сразу
-addEvent(but[7], "onClick", function()
+addEvent(but[7], "onMouseDown", function()
 
 	--Обнуляем все результаты и числа
 	clearResults()
@@ -484,7 +521,7 @@ addEvent(but[7], "onClick", function()
 end)
 
 --Если нажать на загадочную клавишу S (история ввода)
-addEvent(butHistory, "onClick", function()
+addEvent(butHistory, "onMouseDown", function()
 
 	--Если окно развернуто
 	if shared then
@@ -500,7 +537,7 @@ addEvent(butHistory, "onClick", function()
 end)
 
 --Кнопка очистки истории
-addEvent(clearHistory, "onClick", function()
+addEvent(clearHistory, "onMouseDown", function()
 
 	--Просто обнулить текст
 	setText(memoHistory, "История:\n")
@@ -508,15 +545,15 @@ addEvent(clearHistory, "onClick", function()
 end)
 
 --Memory Clear
-addEvent(but[1], "onClick", function()
+addEvent(but[1], "onMouseDown", function()
 	MEMORY = 0
 end)
 --Memory Save
-addEvent(but[3], "onClick", function()
+addEvent(but[3], "onMouseDown", function()
 	MEMORY = tonumber(numeric)
 end)
 --Memory Read
-addEvent(but[2], "onClick", function()
+addEvent(but[2], "onMouseDown", function()
 	local text = getText(edit)
 	local lnth = numeric:len()
 
@@ -529,11 +566,11 @@ addEvent(but[2], "onClick", function()
 
 end)
 --Memory add
-addEvent(but[4], "onClick", function()
+addEvent(but[4], "onMouseDown", function()
 	MEMORY = MEMORY+numeric
 end)
 --Memory remove
-addEvent(but[5], "onClick", function()
+addEvent(but[5], "onMouseDown", function()
 	MEMORY = MEMORY-numeric
 end)
 
@@ -548,38 +585,89 @@ addEvent(mainFrame, "onKey", function(key)
 		if (key == tostring(i) or key == "num_"..tostring(i)) and not isKeyPressed("shift") then
 
 			--То вызвать событие нажатия на данной клавише
-			executeEvent(butNum[i], "onClick")
+			executeEvent(butNum[i], "onMouseDown")
 		end
 	end
 
 	--Если кнопка "стереть" - то стереть один символ - вызвать событие на кнопку со стрелкой
-	if key == "backspace" then executeEvent(but[6], "onClick") end
+	if key == "backspace" then executeEvent(but[6], "onMouseDown") end
 	--Если кнопка "удалить" - то обнулить актуальное число - вызвать событие на кнопку "C"
-	if key == "delete" or key == "num_del" then executeEvent(but[8], "onClick") end
+	if key == "delete" or key == "num_del" then executeEvent(but[8], "onMouseDown") end
 	--Если кнопка "снести" - то обнулить всё выражение - вызвать событие на кнопку "CE"
-	if isKeyPressed("shift") and (key == "delete" or key == "num_delete") then executeEvent(but[7], "onClick") end
+	if isKeyPressed("shift") and (key == "delete" or key == "num_delete") then executeEvent(but[7], "onMouseDown") end
 
 	--Теперь действия
 	--Если сложение
-	if key == "+" or key == "num_add" or (isKeyPressed("shift") and key == "=") then executeEvent(but.Plus, "onClick") end
+	if key == "+" or key == "num_add" or (isKeyPressed("shift") and key == "=") then executeEvent(but.Plus, "onMouseDown") end
 	--Если вычитание
-	if key == "-" or key == "num_sub" then executeEvent(but.Minus, "onClick") end
+	if key == "-" or key == "num_sub" then executeEvent(but.Minus, "onMouseDown") end
 	--Если произведение
-	if key == "*" or key == "num_mul" or (isKeyPressed("shift") and key == "8") then executeEvent(but.Proiz, "onClick") end
+	if key == "*" or key == "num_mul" or (isKeyPressed("shift") and key == "8") then executeEvent(but.Proiz, "onMouseDown") end
 	--Если деление
-	if key == "/" or key == "num_div" then executeEvent(but.Divd, "onClick") end
+	if key == "/" or key == "num_div" then executeEvent(but.Divd, "onMouseDown") end
 	--Если процент
-	if isKeyPressed("shift") and key == "5" then executeEvent(but.Perc, "onClick") end
+	if isKeyPressed("shift") and key == "5" then executeEvent(but.Perc, "onMouseDown") end
 	--Если отрицание
-	if isKeyPressed("shift") and (key == "-" or key == "num_sub") then executeEvent(but.Negtv, "onClick") end
+	if isKeyPressed("shift") and (key == "-" or key == "num_sub") then executeEvent(but.Negtv, "onMouseDown") end
 
 	--Теперь результат
-	if key == "enter" or key == "num_enter" or key == "=" then executeEvent(but.Reslt, "onClick") end
+	if key == "enter" or key == "num_enter" or key == "=" then executeEvent(but.Reslt, "onMouseDown") end
 
+	if key == "M" then
+		if DefaultColorScheme == colorScheme.Dark then
+			DefaultColorScheme = colorScheme.Light
+		else
+			DefaultColorScheme = colorScheme.Dark
+		end
+		
+		setColorScheme(DefaultColorScheme.Frame, 
+			DefaultColorScheme.Text, 
+			DefaultColorScheme.EditB, 
+			DefaultColorScheme.EditT, 
+			DefaultColorScheme.ButD, 
+			DefaultColorScheme.ButL, 
+			DefaultColorScheme.ButM, 
+			DefaultColorScheme.Green, 
+			DefaultColorScheme.Red
+		)
+
+	end
 	--Проверка ключей
 	--print("\""..key.."\"")
 
 end)
+
+--Функции
+--Смена цветовой схемы
+--Цвет окна, основной цвет текста, задник эдитбокса, цвет текста эдитбокса, светлые кнопки, тёмные кнопки, текст цветных кнопок, зеленая кнопка, красная кнопка
+function setColorScheme(framecol, text, editsBack, editsText, lightButton, darkButton, colButtons, green, red)
+	
+	setColor(mainFrame, framecol, text)
+	local textEd = getText(memoHistory)
+	setColor(memoHistory, editsBack, editsText)
+	setText(memoHistory, textEd)
+
+	setColor(butHistory, lightButton, text)
+
+	for _, v in pairs(but) do setColor(v, lightButton, text) end
+	for _, v in pairs(butNum) do setColor(v, darkButton, text) end
+	setColor(but.Reslt, green, colButtons)
+	setColor(clearHistory, red, colButtons)
+
+	setColor(edit, editsBack, editsText)	
+end
+
+--покрасим
+setColorScheme(DefaultColorScheme.Frame, 
+	DefaultColorScheme.Text, 
+	DefaultColorScheme.EditB, 
+	DefaultColorScheme.EditT, 
+	DefaultColorScheme.ButD, 
+	DefaultColorScheme.ButL, 
+	DefaultColorScheme.ButM, 
+	DefaultColorScheme.Green, 
+	DefaultColorScheme.Red)
+
 
 --Обязательный пункт, его надо всегда в конец программы ставить
 runApplication()

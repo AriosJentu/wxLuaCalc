@@ -108,6 +108,55 @@ function setColor(element, back, main)
 	element:SetBackgroundColour(wx.wxColour(fromHEXToRGB(back)))
 end
 
+function getColor(element, typ, ishex)
+
+	local color = tostring(element:GetBackgroundColour():GetAsString())
+	if typ then color = tostring(element:GetForegroundColour():GetAsString()) end
+
+	color = color:sub(1, -2)
+	color = color:gsub("rgb", ""):gsub("a", ""):gsub(",", "")
+	color = color:sub(2, -1)
+	
+	--print(getColor)
+	local zap1, zap2, zap3 = color:match("(%d+) (%d+) (%d+)")
+	
+	if not ishex then 
+		return tonumber(zap1), tonumber(zap2), tonumber(zap3)
+	else
+		return string.format("%.2x%.2x%.2x", tonumber(zap1), tonumber(zap2), tonumber(zap3))
+	end
+
+end
+function setDarker(element, points)
+	
+	local r, g, b = getColor(element)
+	local r1, g1, b1 = getColor(element, true)
+
+	r = r-points
+	if r < 0 then r = 0 end
+	g = g-points
+	if g < 0 then g = 0 end
+	b = b-points 
+	if b < 0 then b = 0 end
+
+	setColor(element, fromRGBToHEX(r, g, b), fromRGBToHEX(r1, g1, b1))
+end
+
+function setLighter(element, points)
+	
+	local r, g, b = getColor(element)
+	local r1, g1, b1 = getColor(element, true)
+
+	r = r+points
+	if r > 255 then r = 255 end
+	g = g+points
+	if g > 255 then g = 255 end
+	b = b+points 
+	if b > 255 then b = 255 end
+
+	setColor(element, fromRGBToHEX(r, g, b), fromRGBToHEX(r1, g1, b1))
+end
+
 --Установка текста элементу
 function setText(element, text) 
 	if getType(element) == "edit" then
@@ -551,6 +600,14 @@ function fromHEXToRGB(color)
     --Если 6 символов (RRGGBB) - то вернёт 3 числа - r, g, b
     elseif tostring(color):len() == 6 then return tonumber(color:sub(1, 2), 16), tonumber(color:sub(3, 4), 16), tonumber(color:sub(5, 6), 16)
     end
+end
+
+function fromRGBToHEX(r, g, b, a)
+	if a then
+		return string.format("%.2x%.2x%.2x%.2x", a, r, g, b)
+	else
+		return string.format("%.2x%.2x%.2x", r, g, b)
+	end
 end
 
 
