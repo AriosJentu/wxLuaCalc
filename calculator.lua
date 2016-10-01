@@ -192,6 +192,12 @@ for i = 1, 9 do
 	--Событие нажатия
 	addEvent(butNum[i], "onClick", function()
 
+		--Если был нажат квадратный корень или 1/x
+		if sqrtClick then
+			--Во имя исправления косяка, исключить это данное 
+			return false
+		end
+
 		--Если есть инфинита, то обнуляем
 		if getText(edit) == "∞" then setText(edit, "0") end
 
@@ -220,12 +226,6 @@ for i = 1, 9 do
 		--print('"'..text:sub(text:len(), text:len())..'"')
 		text = text..i
 
-		--Если был нажат квадратный корень или 1/x
-		if sqrtClick then 
-			--sqrtClick = false --То отменяем
-			text = text..")" --И в конец скобочку
-		end
-
 		--Обновляем текст
 		setText(edit, text)
 		--Сохраняем текст
@@ -247,6 +247,12 @@ addEvent(butNum[0], "onClick", function()
 	--В противном случае, если на десятичную точку не было нажато
 	if not zeroClick then
 
+		--Если был нажат квадратный корень
+		if sqrtClick then 
+			--Во имя ошибок, вернуть false на всё
+			return false
+		end
+
 		local text = getText(edit)
 		numeric = tostring(numeric.."0") --То добавляем символ в конце	
 
@@ -254,11 +260,6 @@ addEvent(butNum[0], "onClick", function()
 		if text:sub(text:len(), text:len()) == ")" then text = text:sub(1, text:len()-1) end		
 		text = text.."0" --И обновляем текст
 		
-		--Если был нажат квадратный корень
-		if sqrtClick then 
-			--sqrtClick = false --То отменяем
-			text = text..")" --И в конец скобочку
-		end
 
 		--Обновляем текст
 		setText(edit, text)
