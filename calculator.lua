@@ -66,7 +66,7 @@ but["Proiz"]= createButton(140, 160, 40, 35, "*", _, mainFrame)
 but["Revrs"]= createButton(185, 160, 40, 35, "x¯¹", _, mainFrame)
 
 --Четвертый порядок кнопок
-butNum[1] 	= createButton(5, 	200, 40, 35, "1", _, mainFrame)
+butNum[1]	= createButton(5, 	200, 40, 35, "1", _, mainFrame)
 butNum[2] 	= createButton(50, 	200, 40, 35, "2", _, mainFrame)
 butNum[3] 	= createButton(95, 	200, 40, 35, "3", _, mainFrame)
 but["Minus"]= createButton(140, 200, 40, 35, "-", _, mainFrame)
@@ -180,16 +180,16 @@ function clearResults()
 end
 
 function addHistoryElement(text)
-	setText(memoHistory, getText(memoHistory)..text.."\n")
+	setText(memoHistory, getText(memoHistory).."\n"..text.."\n")
 end
 
 --События
 local zeroClick = false --Ноль для десятичной дроби 
 local sqrtClick = false --Нажаты ли квадратный корень или реверсивная функция
-local SavingText --переменная сохранения текста
+local SavingText = "0" --переменная сохранения текста
 for i = 1, 9 do
 	--Событие нажатия
-	executeEvent(butNum[i], "onClick", function()
+	addEvent(butNum[i], "onClick", function()
 
 		--Если есть инфинита, то обнуляем
 		if getText(edit) == "∞" then setText(edit, "0") end
@@ -233,7 +233,7 @@ for i = 1, 9 do
 end
 
 --Событие для символа 0
-executeEvent(butNum[0], "onClick", function()
+addEvent(butNum[0], "onClick", function()
 
 	--Если у нас символ бесконечности, то обнуляем
 	if getText(edit) == "∞" then setText(edit, "0") end
@@ -271,7 +271,7 @@ executeEvent(butNum[0], "onClick", function()
 end)
 
 --Событие для символа точки
-executeEvent(butPt, "onClick", function()
+addEvent(butPt, "onClick", function()
 	--Если в номере уже есть точка
 	if numeric:find("%.") then 
 		return false --То закрыть выполнение данного события
@@ -290,7 +290,7 @@ end)
 
 --События для действий
 for _, v in pairs({"Plus", "Minus", "Proiz", "Divd", "Perc"}) do
-	executeEvent(but[v], "onClick", function()
+	addEvent(but[v], "onClick", function()
 
 		--Добавляем в таблицу обработанный номер/цифру
 		addNumber(tonumber(numeric))
@@ -308,7 +308,7 @@ for _, v in pairs({"Plus", "Minus", "Proiz", "Divd", "Perc"}) do
 	end)
 end
 --Событие нажатия квадратного корня
-executeEvent(but["Sqrt"], "onClick", function()
+addEvent(but.Sqrt, "onClick", function()
 
 	--Добавляем в таблицу обработанный номер/цифру
 	addNumber(tonumber(numeric))
@@ -318,14 +318,14 @@ executeEvent(but["Sqrt"], "onClick", function()
 	--Устанавливаем нажатость корня
 	sqrtClick = true
 	--Устанавливаем текст
-	setText(edit, Elements["Sqrt"].."("..getText(edit)..")")
+	setText(edit, Elements.Sqrt.."("..getText(edit)..")")
 
 	--Сохраним текст
 	SavingText = getText(edit)
 
 end)
 --Событие нажатия клавиши 1/x
-executeEvent(but["Revrs"], "onClick", function()
+addEvent(but.Revrs, "onClick", function()
 
 	--Добавляем в таблицу обработанный номер/цифру
 	addNumber(tonumber(numeric))
@@ -344,7 +344,7 @@ executeEvent(but["Revrs"], "onClick", function()
 end)
 
 --Событие нажатия клавиши +-
-executeEvent(but["Negtv"], "onClick", function()
+addEvent(but.Negtv, "onClick", function()
 
 	--Добавляем в таблицу обработанный номер/цифру
 	addNumber(tonumber(numeric))
@@ -360,7 +360,7 @@ executeEvent(but["Negtv"], "onClick", function()
 	SavingText = getText(edit)
 end)
 --Если это кнопка результата
-executeEvent(but["Reslt"], "onClick", function()
+addEvent(but.Reslt, "onClick", function()
 	
 	--Добавить число в таблицу
 	addNumber(tonumber(numeric))
@@ -393,7 +393,7 @@ executeEvent(but["Reslt"], "onClick", function()
 end)
 
 --События на клавиши удаления символов
-executeEvent(butRm, "onClick", function()
+addEvent(butRm, "onClick", function()
 
 	local ls = numeric:len() --Длина числа для удаления
 	local text = getText(edit) --Текст
@@ -435,7 +435,7 @@ executeEvent(butRm, "onClick", function()
 end)
 
 --Если нажмём на кнопку C, которая очистит только фрагмент выражения
-executeEvent(butCc, "onClick", function()
+addEvent(butCc, "onClick", function()
 	
 	--Снова найдём размеры строк
 	local ls = numeric:len()
@@ -449,7 +449,7 @@ executeEvent(butCc, "onClick", function()
 end)
 
 --и если нажмём на кнопку, которая чистит всё выражение сразу
-executeEvent(butCl, "onClick", function()
+addEvent(butCl, "onClick", function()
 
 	--Обнуляем все результаты и числа
 	clearResults()
@@ -459,7 +459,7 @@ executeEvent(butCl, "onClick", function()
 end)
 
 --Если нажать на загадочную клавишу S (история ввода)
-executeEvent(butHistory, "onClick", function()
+addEvent(butHistory, "onClick", function()
 
 	--Если окно развернуто
 	if shared then
@@ -475,7 +475,7 @@ executeEvent(butHistory, "onClick", function()
 end)
 
 --Кнопка очистки истории
-executeEvent(clearHistory, "onClick", function()
+addEvent(clearHistory, "onClick", function()
 
 	--Просто обнулить текст
 	setText(memoHistory, "История:\n")
@@ -483,15 +483,15 @@ executeEvent(clearHistory, "onClick", function()
 end)
 
 --Memory Clear
-executeEvent(butMC, "onClick", function()
+addEvent(butMC, "onClick", function()
 	MEMORY = 0
 end)
 --Memory Save
-executeEvent(butMS, "onClick", function()
+addEvent(butMS, "onClick", function()
 	MEMORY = tonumber(numeric)
 end)
 --Memory Read
-executeEvent(butMR, "onClick", function()
+addEvent(butMR, "onClick", function()
 	local text = getText(edit)
 	local lnt = numeric:len()
 
@@ -504,14 +504,53 @@ executeEvent(butMR, "onClick", function()
 
 end)
 --Memory add
-executeEvent(butMP, "onClick", function()
+addEvent(butMP, "onClick", function()
 	MEMORY = MEMORY+numeric
 end)
 --Memory remove
-executeEvent(butMM, "onClick", function()
+addEvent(butMM, "onClick", function()
 	MEMORY = MEMORY-numeric
 end)
 
+--Событие по нажатию символов на клавиатуре
+addEvent(mainFrame, "onKey", function(key) 
+	--Получим текстовую часть ключа (кнопку)
+	key = getKey(key)
 
+	--Циклим все кнопки
+	for i = 0, 9 do
+		--Если клавиша совпадает с параметром цикла
+		if (key == tostring(i) or key == "num_"..tostring(i)) and not isKeyPressed("shift") then
+
+			--То вызвать событие нажатия на данной клавише
+			executeEvent(butNum[i], "onClick")
+		end
+	end
+
+	--Если кнопка "стереть" - то стереть один символ - вызвать событие на кнопку со стрелкой
+	if key == "backspace" then executeEvent(butRm, "onClick") end
+	--Если кнопка "удалить" - то обнулить актуальное число - вызвать событие на кнопку "C"
+	if key == "delete" or key == "num_del" then executeEvent(butCc, "onClick") end
+	--Если кнопка "снести" - то обнулить всё выражение - вызвать событие на кнопку "CE"
+	if isKeyPressed("shift") and (key == "delete" or key == "num_delete") then executeEvent(butCl, "onClick") end
+
+	--Теперь действия
+	--Если сложение
+	if key == "+" or key == "num_add" or (isKeyPressed("shift") and key == "=") then executeEvent(but.Plus, "onClick") end
+	--Если вычитание
+	if key == "-" or key == "num_sub" then executeEvent(but.Minus, "onClick") end
+	--Если произведение
+	if key == "*" or key == "num_mul" or (isKeyPressed("shift") and key == "8") then executeEvent(but.Proiz, "onClick") end
+	--Если деление
+	if key == "/" or key == "num_div" then executeEvent(but.Divd, "onClick") end
+	--Если процент
+	if isKeyPressed("shift") and key == "5" then executeEvent(but.Perc, "onClick") end
+	--Если отрицание
+	if isKeyPressed("shift") and (key == "-" or key == "num_sub") then executeEvent(but.Negtv, "onClick") end
+
+	--Теперь результат
+	if key == "enter" or key == "num_enter" then executeEvent(but.Reslt, "onClick") end
+
+end)
 --Обязательный пункт, его надо всегда в конец программы ставить
 runApplication()
