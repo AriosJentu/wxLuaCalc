@@ -38,7 +38,7 @@ local but = {} --Символьные
 local topBut = {} --Краска для символов
 
 --Кнопка истории рассчётов
-local butHistory = createButton(187, 5, 36, 27, "S", _, mainFrame)
+local butHistory = createButton(187, 5, 36, 27, "H", _, mainFrame)
 
 --Первый ряд кнопок
 but[1] = createButton(5+2,		38+2, 40-4, 35-4, "MC", _, mainFrame)
