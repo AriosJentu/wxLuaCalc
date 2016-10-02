@@ -52,7 +52,7 @@ local shared = false --Перемнная, обозначающая, что ка
 local edit = createEdit(5, 5, 177, 27, "0", "read", mainFrame)
 
 ---История рассчётов
-local memoHistory = createEdit(230, 5, 225, 230, "История:\n", "mread", mainFrame)
+local memoHistory = createEdit(230, 5, 225, 230, " История:\n", "mread", mainFrame)
 setFont(memoHistory,"Open Sans", 9)
 local clearHistory = createButton(230, 240, 225, 35, "Очистить", _, mainFrame)
 
@@ -210,7 +210,7 @@ function clearResults()
 end
 
 function addHistoryElement(text)
-	setText(memoHistory, getText(memoHistory).."\n"..text.."\n")
+	setText(memoHistory, getText(memoHistory).."\n "..text.."\n")
 end
 
 --События
@@ -251,7 +251,10 @@ for i = 1, 9 do
 		end
 
 		--Если есть инфинита, то обнуляем
-		if getText(edit) == "∞" then setText(edit, "0") end
+		if getText(edit) == "∞" then 
+			setText(edit, "") 
+			numeric = ""
+		end
 
 		--Получаем текст
 		local text = getText(edit)
@@ -289,7 +292,10 @@ end
 addEvent(butNum[0], "onMouseDown", function()
 
 	--Если у нас символ бесконечности, то обнуляем
-	if getText(edit) == "∞" then setText(edit, "0") end
+	if getText(edit) == "∞" then 
+		setText(edit, "") 
+		numeric = ""
+	end
 
 	--Если заданное число уже 0
 	if tostring(numeric) == "0" then 
@@ -540,7 +546,7 @@ end)
 addEvent(clearHistory, "onMouseDown", function()
 
 	--Просто обнулить текст
-	setText(memoHistory, "История:\n")
+	setText(memoHistory, " История:\n")
 
 end)
 
