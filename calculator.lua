@@ -1,5 +1,5 @@
 --Подключаем модули графической библиотеки
-local APPDIR = ""--"./Lua/"
+local APPDIR = arg[0]:gsub("calculator.lua", "")--"./Lua/"
 
 dofile(APPDIR.."frameLibrary.lua") --Библиотека функций
 local MEMORY = 0 --Число в буфере
@@ -588,7 +588,7 @@ addEvent(mainFrame, "onKey", function(key)
 	--Циклим все кнопки
 	for i = 0, 9 do
 		--Если клавиша совпадает с параметром цикла
-		if (key == tostring(i) or key == "num_"..tostring(i)) and not isKeyPressed("shift") then
+		if (key == tostring(i) or key == "num_"..tostring(i)) then
 
 			--То вызвать событие нажатия на данной клавише
 			executeEvent(butNum[i], "onMouseDown")
@@ -617,7 +617,7 @@ addEvent(mainFrame, "onKey", function(key)
 	if isKeyPressed("shift") and (key == "-" or key == "num_sub") then executeEvent(but.Negtv, "onMouseDown") end
 
 	--Теперь результат
-	if key == "enter" or key == "num_enter" or key == "=" then executeEvent(but.Reslt, "onMouseDown") end
+	if key == "enter" or key == "num_enter" or (key == "=" and not isKeyPressed("shift"))  then executeEvent(but.Reslt, "onMouseDown") end
 
 	if key == "M" then
 		if DefaultColorScheme == colorScheme.Dark then
