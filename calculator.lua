@@ -15,7 +15,9 @@ local Elements = {
 	["Result"] = "="
 }
 
+--Цветовые схемы
 local colorScheme = {
+	--Темная
 	Dark = {
 		Frame = "444444", 
 		Text = "EEEEEE", 
@@ -27,6 +29,7 @@ local colorScheme = {
 		Green = "2e7d32", 
 		Red = "b71c1c"
 	},
+	--Светлая
 	Light = {
 		Frame = "EEEEEE", 
 		Text = "444444", 
@@ -39,6 +42,7 @@ local colorScheme = {
 		Red = "df3939"
 	},
 }
+--Цветовая схема по умолчанию
 local DefaultColorScheme = colorScheme.Dark
 
 --Создаём основное окно
@@ -588,7 +592,7 @@ addEvent(mainFrame, "onKey", function(key)
 	--Циклим все кнопки
 	for i = 0, 9 do
 		--Если клавиша совпадает с параметром цикла
-		if (key == tostring(i) or key == "num_"..tostring(i)) then
+		if (key == tostring(i) or key == "num_"..tostring(i)) and not isKeyPressed("shift") then
 
 			--То вызвать событие нажатия на данной клавише
 			executeEvent(butNum[i], "onMouseDown")
@@ -619,13 +623,18 @@ addEvent(mainFrame, "onKey", function(key)
 	--Теперь результат
 	if key == "enter" or key == "num_enter" or (key == "=" and not isKeyPressed("shift"))  then executeEvent(but.Reslt, "onMouseDown") end
 
+	--Клавиша для смены цветовой схемы
 	if key == "M" then
+		--Если дефолт - тёмная 
 		if DefaultColorScheme == colorScheme.Dark then
+			--То сменить на светлую
 			DefaultColorScheme = colorScheme.Light
 		else
+			--Иначе - на тёмную
 			DefaultColorScheme = colorScheme.Dark
 		end
 		
+		--Установить цветовую схему в зависимости от стандартной цветовой схемы
 		setColorScheme(DefaultColorScheme.Frame, 
 			DefaultColorScheme.Text, 
 			DefaultColorScheme.EditB, 
@@ -648,18 +657,28 @@ end)
 --Цвет окна, основной цвет текста, задник эдитбокса, цвет текста эдитбокса, светлые кнопки, тёмные кнопки, текст цветных кнопок, зеленая кнопка, красная кнопка
 function setColorScheme(framecol, text, editsBack, editsText, lightButton, darkButton, colButtons, green, red)
 	
+	--Установить цвет главной рамке окна
 	setColor(mainFrame, framecol, text)
+
+	--Получить текст мемобокса для корректировки цвета
 	local textEd = getText(memoHistory)
+	--Установить цвет мемобоксу
 	setColor(memoHistory, editsBack, editsText)
+	--Установить текст
 	setText(memoHistory, textEd)
 
+	--Установить цвет кнопки лога
 	setColor(butHistory, lightButton, text)
 
+	--Циклим клавиши для установления цвета
 	for _, v in pairs(but) do setColor(v, lightButton, text) end
 	for _, v in pairs(butNum) do setColor(v, darkButton, text) end
+
+	--Установить цвет клавишам равно и очистить
 	setColor(but.Reslt, green, colButtons)
 	setColor(clearHistory, red, colButtons)
 
+	--Эдитбоксу цвет
 	setColor(edit, editsBack, editsText)	
 end
 
@@ -672,7 +691,8 @@ setColorScheme(DefaultColorScheme.Frame,
 	DefaultColorScheme.ButL, 
 	DefaultColorScheme.ButM, 
 	DefaultColorScheme.Green, 
-	DefaultColorScheme.Red)
+	DefaultColorScheme.Red
+)
 
 
 --Обязательный пункт, его надо всегда в конец программы ставить
