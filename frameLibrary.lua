@@ -5,6 +5,7 @@ local funTab = {} 		--Таблица, в которую сохраняются �
 ------------------------------------------------------------
 --====================РАБОТА С КЛЮЧАМИ====================--
 ------------------------------------------------------------
+--Ключ - ASCII код для определённой клавиши на клавиатуре
 
 --Функция получения ключа
 function getKey(id)
@@ -68,12 +69,21 @@ function createFrame(x, y, w, h, title, style, parent)
 
 	--Аргумент, отвечающий за стиль
 	if style == "full" 			then style = wx.wxDEFAULT_FRAME_STYLE  										--Все модули
-	elseif style == "nores" 	then style = wx.wxMINIMIZE_BOX + wx.wxCLOSE_BOX  							--Только модуль закрыть и свернуть (без ресайза)
-	elseif style == "resize" 	then style = wx.wxMINIMIZE_BOX + wx.wxCLOSE_BOX + wx.wxRESIZE_BORDER end	--Только модуль закрыть и свернуть, но окно ресайзится
+	elseif style == "nores" 	then style = wx.wxMINIMIZE_BOX + wx.wxCLOSE_BOX  							--Только модуль закрыть и свернуть (без изменения размера)
+	elseif style == "resize" 	then style = wx.wxMINIMIZE_BOX + wx.wxCLOSE_BOX + wx.wxRESIZE_BORDER end	--Только модуль закрыть и свернуть, но окно может менять размер (активные углы)
 
 	--Создание окна
 	local id 	= wx.wxID_ANY
-	local frame = wx.wxFrame(parent or wx.NULL, id, tostring(title), wx.wxPoint(x, y) or wx.wxDefaultPosition, wx.wxSize(w, h) or wx.wxDefaultSize, style or wx.wxDEFAULT_FRAME_STYLE)
+
+	local frame = wx.wxFrame(
+		parent 				or wx.NULL, 
+		id, 
+		tostring(title), 
+		wx.wxPoint(x, y) 	or wx.wxDefaultPosition, 
+		wx.wxSize(w, h) 	or wx.wxDefaultSize, 
+		style 				or wx.wxDEFAULT_FRAME_STYLE
+	)
+	
 	frame:Show(true)
 
 	return frame, id
@@ -82,7 +92,7 @@ end
 --Создание кнопки
 function createButton(x, y, w, h, title, style, parent)
 
-	--Если нет родительского элемента, то не запускать кнопку
+	--Если нет родительского элемента, то не создавать кнопку
 	if not parent then 
 		print("Error with CREATING BUTTON: needs parent")
 		return false 
@@ -90,7 +100,15 @@ function createButton(x, y, w, h, title, style, parent)
 
 	--Создать кнопку
 	local id = wx.wxID_ANY
-	local button = wx.wxButton(parent, id, tostring(title), wx.wxPoint(x, y) or wx.wxDefaultPosition, wx.wxSize(w, h) or wx.wxDefaultSize, style or wx.wxBU_EXACTFIT)
+
+	local button = wx.wxButton(
+		parent, 
+		id, 
+		tostring(title), 
+		wx.wxPoint(x, y) 	or wx.wxDefaultPosition, 
+		wx.wxSize(w, h) 	or wx.wxDefaultSize, 
+		style 				or wx.wxBU_EXACTFIT
+	)
 	
 	--Вернуть кнопку
 	return button, id
@@ -118,7 +136,15 @@ function createEdit(x, y, w, h, text, style, parent)
 
 	--Создание
 	local id = wx.wxID_ANY
-	local edit = wx.wxTextCtrl(parent, id, tostring(text), wx.wxPoint(x, y) or wx.wxDefaultPosition, wx.wxSize(w, h) or wx.wxDefaultSize, style or 0)
+
+	local edit = wx.wxTextCtrl(
+		parent, 
+		id, 
+		tostring(text), 
+		wx.wxPoint(x, y) 	or wx.wxDefaultPosition, 
+		wx.wxSize(w, h) 	or wx.wxDefaultSize, 
+		style 				or 0
+	)
 
 	--Вернуть
 	return edit, id
@@ -133,15 +159,22 @@ function createLabel(x, y, w, h, text, style, parent)
 		return false 
 	end
 
-	--Стиль текста, оф корс
-	--Почему то не работают другие положения, кроме LEFT
+	--Выравнивание текста на экране (в соответствии с координатами и размерами элемента)
 	if style == "aleft" 		then style = wx.wxALIGN_LEFT
 	elseif style == "aright" 	then style = wx.wxALIGN_RIGHT
 	elseif style == "acent" 	then style = wx.wxALIGN_CENTRE_HORIZONTAL end
 
 	--Создание
 	local id = wx.wxID_ANY
-	local label = wx.wxStaticText(parent, id, tostring(text), wx.wxPoint(x, y) or wx.wxDefaultPosition, wx.wxSize(w, h) or wx.wxDefaultSize, style or 0)
+
+	local label = wx.wxStaticText(
+		parent, 
+		id, 
+		tostring(text), 
+		wx.wxPoint(x, y) 	or wx.wxDefaultPosition, 
+		wx.wxSize(w, h) 	or wx.wxDefaultSize, 
+		style 				or 0
+	)
 
 	return label, id
 end
@@ -150,7 +183,7 @@ end
 --============= ФУНКЦИИ УСТАНОВКИ ПАРАМЕТРОВ =============--
 ------------------------------------------------------------
 
---Функция по установке иконки для окна (в топбар и таскбар)
+--Функция по установке иконки для окна
 function setAppIcon(element, iconDir)
 	
 	--Если элемент не является окном, то закрыть действие
@@ -195,11 +228,13 @@ function setFont(element, name, size, fam, style, weig, ulin)
 	return element:SetFont(wx.wxFont(size, fam, style, weig, ulin, name)) 
 
 end
+
 --Установка цвета элементу
 function setColor(element, back, main)
 	element:SetForegroundColour(wx.wxColour(fromHEXToRGB(main)))
 	element:SetBackgroundColour(wx.wxColour(fromHEXToRGB(back)))
 end
+
 --Установка текста элементу
 function setText(element, text) 
 	if getType(element) == "edit" then
@@ -215,10 +250,12 @@ end
 function setAlpha(element, alpha)
 	--Получение цвета
 	local r, g, b = getColor(element)
+
 	r, g, b = --Установим цвет элемента в зависимости от его текущей прозрачности и сохранённой
 		(r or 255)*alpha/(elementAlpha[element] or 1), 
 		(g or 255)*alpha/(elementAlpha[element] or 1), 
 		(b or 255)*alpha/(elementAlpha[element] or 1)
+
 	if r > 255 then r = 255 end
 	if g > 255 then g = 255 end
 	if b > 255 then b = 255 end
@@ -237,6 +274,7 @@ end
 
 --Функция для получения шрифта
 function getFont(element) return element:GetFont() end
+
 --Функция получения альфаканала
 function getAlpha(element) return elementAlpha[element] or 1 end
 

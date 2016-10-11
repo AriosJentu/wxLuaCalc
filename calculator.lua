@@ -1,3 +1,8 @@
+--Директория пакетов
+package.cpath = package.cpath..";./?.dll;./?.so;../lib/?.so;../lib/vc_dll/?.dll;../lib/bcc_dll/?.dll;../lib/mingw_dll/?.dll;"
+--Запуск модуля WXWidgets
+wx = require("wx")
+
 --Переменная, отвечающая за то, в какой директории на данный момент запускается программа
 APPDIR = arg[0]:gsub("calculator.lua", "")
 

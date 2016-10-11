@@ -1,7 +1,3 @@
-package.cpath = package.cpath..";./?.dll;./?.so;../lib/?.so;../lib/vc_dll/?.dll;../lib/bcc_dll/?.dll;../lib/mingw_dll/?.dll;"
---Запуск модуля WXWidgets
-wx = require("wx")
-
 --Таблица символов
 tableChars = {
 	[wx.WXK_BACK] 		= "backspace",
@@ -140,7 +136,8 @@ tableOfEvents = {
 	},
 	["onMouseEnter"]= wx.wxEVT_ENTER_WINDOW,
 	["onMouseLeave"]= wx.wxEVT_LEAVE_WINDOW,
-	["onWheel"] 	= {
+	["onWheel"] 	= 
+	{
 		["up"] 		= wx.wxEVT_SCROLL_LINEUP,
 		["down"]	= wx.wxEVT_SCROLL_LINEDOWN
 	},
@@ -170,9 +167,9 @@ colorScheme = {
 		Text 	= "EEEEEE", 	--Цвет текста на окне и в основных клавишах
 		EditB 	= "404040", 	--Цвет панелей ввода текста
 		EditT 	= "EEEEEE", 	--Цвет текста в этих панелях
-		ButD 	= "333333", 	--Цвет тёмных клавиш
-		ButL 	= "252525", 	--Цвет светлых клавиш
-		ButM 	= "EEEEEE",		--Цвет текста в клавишах "равно" и "очистить историю
+		ButD 	= "333333", 	--Цвет клавиш с действиями
+		ButL 	= "252525", 	--Цвет клавиш с цифрами
+		ButM 	= "EEEEEE",		--Цвет текста в клавишах "равно" и "очистить историю"
 		Green 	= "2e7d32", 	--Цвет для кнопки "равно"
 		Red 	= "b71c1c"		--Цвет для кнопки "очистить историю"
 	},
