@@ -49,41 +49,34 @@ function calculateResult()
 
 	end
 
-	--Обнуляем
-	clearResults()
+	clearResults()		--Обнуляем
 
-	--По завершению цикла возвращаем результат
-	return result
+	return result 		--По завершению цикла возвращаем результат
 end
---Функция обнуления
-function clearResults()
 
-	--Обнуляем таблицу
-	Calculation = { 
+function clearResults()	--Функция обнуления
+
+	Calculation = { 		--Обнуление таблицы
 		Number = {},
 		Job = {}
 	}
-	--Обнуляем текст в верхней строке калькулятора
-	setText(ResultBox, "0")
+	
+	setText(ResultBox, "0")		--Обнуляем текст в верхней строке калькулятора
 
-	--Обнуляем сохраняющее число
-	SavingNumber = "0"
+	SavingNumber = "0"			--Обнуляем сохраняющее число
 end
 
 local zeroClick = false --Переменная, отвечающая за то, чтобы ноль в десятичной дроби заменялся на число (12.0 -> 12.5)
 local isUnaryOp = false --Переменная, которая будет являться проверкой на выполнение унарной операции (sqrt, 1/x, +-)
 
---Исполнение цикла для действий по нажатию на клавиши
-for i, v in pairs(Buttons) do
+for i, v in pairs(Buttons) do 	--Исполнение цикла для действий по нажатию на клавиши
 	
 	addEvent(v, "onMouseEnter", function()	setAlpha(v, 0.7)	end)
 	addEvent(v, "onMouseLeave", function()	setAlpha(v, 1)		end)
 
-	--Добавляется событие нажатия
-	addEvent(v, "onMouseDown", function()
+	addEvent(v, "onMouseDown", function()	--Добавляется событие нажатия
 
-		--Переведём аргумент в строку
-		i = tostring(i)
+		i = tostring(i)							--Переведём аргумент в строку
 
 		if tonumber(i) then						--Если ключ цикла можно перевести в число (0-9)
 			if isUnaryOp then return false end	--Если исполняется унарная операция, то закончить событие
@@ -120,12 +113,11 @@ for i, v in pairs(Buttons) do
 			if i == "." then		--Если нажатие на точку
 
 				if getText(ResultBox) == Symbols.Inft then	--При Error (заменённый символ бесконечности)		
-					SavingNumber = 		"0" 	--Обнуляем всё
-					setText(ResultBox,  "0") 	--Включая текст
+					SavingNumber = 		"0" 				--Обнуляем всё
+					setText(ResultBox,  "0") 				--Включая текст
 				end
 					
-				--Если в числе уже есть точка, или совершается унарная операция, то закрыть событие
-				if SavingNumber:find("%.") or isUnaryOp then return false end
+				if SavingNumber:find("%.") or isUnaryOp then return false end	--Если в числе уже есть точка, или совершается унарная операция, то закрыть событие
 
 				SavingNumber = SavingNumber..".0"				--Устанавливаем точку
 				setText(ResultBox, getText(ResultBox)..".0")
