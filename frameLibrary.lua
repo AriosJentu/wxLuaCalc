@@ -1,4 +1,3 @@
-
 local elementAlpha = {} --Таблица сохранения альфа-канала
 local funTab = {} 		--Таблица, в которую сохраняются функции по событиям
 
@@ -35,6 +34,8 @@ function getType(element)
 	elseif name:find("wxStaticText") 	then typs = "label"
 	elseif name:find("wxTextCtrl") 		then typs = "edit"
 	elseif name:find("wxFrame") 		then typs = "frame"
+	elseif name:find("wxPaintDC") 		then typs = "paint"
+
 	else --В противном случае вернуть тип элемента
 		typs = type(element) 
 	end

@@ -1,1 +1,1 @@
-lua5.2 $HOME/Lua/calculator.lua
+lua5.2 $HOME/Lua/Calculator/calculator.lua

@@ -141,7 +141,8 @@ tableOfEvents = {
 		["up"] 		= wx.wxEVT_SCROLL_LINEUP,
 		["down"]	= wx.wxEVT_SCROLL_LINEDOWN
 	},
-	["onShows"] 	= wx.wxEVT_SHOW
+	["onShows"] 	= wx.wxEVT_SHOW,
+	["onPaint"] 	= wx.wxEVT_PAINT 
 
 }
 --Символы, которые будут использоваться в рассчётах
