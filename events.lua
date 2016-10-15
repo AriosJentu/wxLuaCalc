@@ -57,8 +57,8 @@ end
 function clearResults()	--Функция обнуления
 
 	Calculation = { 		--Обнуление таблицы
-		Number = {},
-		Job = {}
+		Number 	= {},
+		Job 	= {}
 	}
 	
 	setText(ResultBox, "0")		--Обнуляем текст в верхней строке калькулятора
@@ -119,10 +119,10 @@ for i, v in pairs(Buttons) do 	--Исполнение цикла для дейс
 					
 				if SavingNumber:find("%.") or isUnaryOp then return false end	--Если в числе уже есть точка, или совершается унарная операция, то закрыть событие
 
-				SavingNumber = SavingNumber..".0"				--Устанавливаем точку
+				SavingNumber 	= SavingNumber..".0"				--Устанавливаем точку
 				setText(ResultBox, getText(ResultBox)..".0")
 
-				zeroClick = true								--Обозначаем, что мы нажали на точку
+				zeroClick 		= true								--Обозначаем, что мы нажали на точку
 
 			--Если нажатие на математическое действие
 			elseif 
@@ -164,16 +164,16 @@ for i, v in pairs(Buttons) do 	--Исполнение цикла для дейс
 
 				if isUnaryOp then return false end		--Если унарная операция, то закрыть событие
 
-				local ls = SavingNumber:len() 			--Длина числа для удаления
-				local text = getText(ResultBox) 		--Текст
-				local lt = text:len() 					--Длина текста
+				local ls 	= SavingNumber:len() 			--Длина числа для удаления
+				local text 	= getText(ResultBox) 			--Текст
+				local lt 	= text:len() 					--Длина текста
 
 				if text == "Error" then text = "0" lt = 1 SavingNumber = "0" ls = 1 end
 		
 				if SavingNumber:sub(ls-1, ls) == ".0" then 	--Если в числе последние 2 символа будут .0
 
-					SavingNumber = SavingNumber:sub(1, ls-2)	--То уберём сразу два этих числа
-					text = text:sub(1, lt-2)
+					SavingNumber 	= SavingNumber:sub(1, ls-2)	--То уберём сразу два этих числа
+					text 			= text:sub(1, lt-2)
 
 				else 	--Если их найдено не будет
 
@@ -207,9 +207,9 @@ for i, v in pairs(Buttons) do 	--Исполнение цикла для дейс
 
 				--Обнуляем все результаты и числа
 				clearResults()
-				SavingNumber = "0"
-				zeroClick = false
-				isUnaryOp = false
+				SavingNumber 	= "0"
+				zeroClick 		= false
+				isUnaryOp 		= false
 				setText(ResultBox, "0")		
 
 			elseif i == Symbols.Result then			--Cчитаем результат
@@ -219,10 +219,11 @@ for i, v in pairs(Buttons) do 	--Исполнение цикла для дейс
 				addNumber(tonumber(SavingNumber))	--Добавить число в таблицу
 
 				local res = calculateResult()		--Посчитать результат
-				if tostring(res) == "inf" 
-					or tostring(res) == "-nan" 
+
+				if tostring(res) 		== "inf" 	--Если результат переходит в бесконечность
+					or tostring(res) 	== "-nan" 
 					then 
-						res = Symbols.Inft 			--Если результат переходит в бесконечность, то заменить соответствующий текст символом
+						res = Symbols.Inft 			--То заменить соответствующий текст символом
 				end	
 
 				----------------------------
@@ -239,9 +240,9 @@ for i, v in pairs(Buttons) do 	--Исполнение цикла для дейс
 
 				if res == Symbols.Inft then res = 0 end		--Если заданный текст - бесконечность, то превратить её в ноль
 
-				SavingNumber = getText(ResultBox)			--Обновить число
-				zeroClick = false							--Обнулить параметры
-				isUnaryOp = false
+				SavingNumber 	= getText(ResultBox)			--Обновить число
+				zeroClick 		= false							--Обнулить параметры
+				isUnaryOp 		= false
 
 			elseif i == "Log" then		--Клавиша лога
 
@@ -298,8 +299,8 @@ addEvent(MainFrame, "onKey", function(key)
 
 	for i = 0, 9 do 				--Циклим все кнопки
 
-		if (key == tostring(i) 								--Если клавиша совпадает с параметром цикла
-			or key == "num_"..tostring(i)) 
+		if (key 	== tostring(i) 								--Если клавиша совпадает с параметром цикла
+			or key 	== "num_"..tostring(i)) 
 			and not isKeyPressed("shift") 
 		then													
 
@@ -311,35 +312,36 @@ addEvent(MainFrame, "onKey", function(key)
 		then 						
 			executeEvent(Buttons[Symbols.Back], "onMouseDown") end
 	
-	if key == "delete" 
-		or key == "num_del" 
+	if key 		== "delete" 
+		or key 	== "num_del" 
 		then 	
 			executeEvent(Buttons.CE, "onMouseDown") end
 	
 	if isKeyPressed("shift") and 
-		(key == "delete" or key == "num_delete") 
+		(key 	== "delete" 
+		or key 	== "num_delete") 
 		then 
 			executeEvent(Buttons.C, "onMouseDown") end
 
-	if key == "+" 
-		or key == "num_add" 
+	if key 		== "+" 
+		or key 	== "num_add" 
 		or (isKeyPressed("shift") and key == "=") 
 		then 
 			executeEvent(Buttons[Symbols.Plus], "onMouseDown") end
 
-	if key == "-" 
-		or key == "num_sub" 
+	if key 		== "-" 
+		or key 	== "num_sub" 
 		then 
 			executeEvent(Buttons[Symbols.Subs], "onMouseDown") end
 
-	if key == "*" 
-		or key == "num_mul" 
+	if key 		== "*" 
+		or key 	== "num_mul" 
 		or (isKeyPressed("shift") and key == "8") 
 		then 
 			executeEvent(Buttons[Symbols.Mply], "onMouseDown") end
 
-	if key == "/" 
-		or key == "num_div" 
+	if key 		== "/" 
+		or key 	== "num_div" 
 		then 
 			executeEvent(Buttons[Symbols.Divd], "onMouseDown") end
 
@@ -349,18 +351,20 @@ addEvent(MainFrame, "onKey", function(key)
 			executeEvent(Buttons[Symbols.Perc], "onMouseDown") end
 	
 	if isKeyPressed("shift") 
-		and (key == "-" or key == "num_sub") 
+		and (key 	== "-" 
+		or key 		== "num_sub") 
 		then 
 			executeEvent(Buttons[Symbols.Negv], "onMouseDown") end
 	
-	if key == "." 
-		or key == "," 
+	if key 		== "." 
+		or key 	== "," 
 		then 
 			executeEvent(Buttons[Symbols.Dots], "onMouseDown") end
 
-	if key == "enter" 
-		or key == "num_enter" 
-		or (key == "=" and not isKeyPressed("shift"))  
+	if key 		== "enter" 
+		or key 	== "num_enter" 
+		or (key == "=" 
+		and not isKeyPressed("shift"))  
 		then 
 			executeEvent(Buttons[Symbols.Result], "onMouseDown") end
 
